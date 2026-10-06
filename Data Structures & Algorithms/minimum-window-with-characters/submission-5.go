@@ -1,0 +1,57 @@
+func minWindow(s string, t string) string {
+	Eq := func(cnt, cnt_buf map[byte]int) bool {
+
+        for i := range cnt {
+            if cnt[i] > cnt_buf[i] {
+				return false
+			}
+        }
+        return true
+    }
+	idxs := make([][3]int, 0)
+    cnt := make(map[byte]int)
+	cnt_buf := make(map[byte]int)
+	n, m := len(s), len(t)
+	for i := range t {
+		cnt[t[i]]++
+	}
+	if n == 1 && m == 1 {
+		if s[0] == t[0] {
+			return s
+		} else {
+			return ""
+		}
+	}
+	idxMin := 0;
+	if n < m {
+		return ""
+	}
+
+	l := 0
+
+	for r := 0; r < n ; r++ {
+		cnt_buf[s[r]]++
+		if Eq(cnt, cnt_buf) {
+			for Eq(cnt, cnt_buf) {
+				cnt_buf[s[l]]--
+				l++
+			}
+			idx := [3]int{(r - l + 2), r + 1, l - 1}
+			idxs = append(idxs, idx)
+		}
+
+	}
+	if len(idxs) == 0 {
+    	return ""
+	}
+	for i := range idxs {
+		if idxs[i][0] < 0 {
+			continue
+		}
+		if idxs[idxMin][0] > idxs[i][0]{
+			idxMin = i
+		}
+	}
+	return s[idxs[idxMin][2]:idxs[idxMin][1]]
+}
+
